@@ -35,7 +35,7 @@ const Index = () => {
     setTimeout(() => {
       toast({
         title: "Welcome to My Portfolio",
-        description: "Scroll down to explore my projects and skills",
+        description: "Chat with my AI assistant to learn more about my experience!",
       });
     }, 1500);
     

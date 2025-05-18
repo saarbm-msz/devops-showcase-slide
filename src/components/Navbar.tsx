@@ -1,10 +1,14 @@
 
 import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { MessageCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
   const [activeSection, setActiveSection] = useState("home");
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,9 +38,14 @@ const Navbar = () => {
       }
     };
     
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    // Only add scroll event listener on home page
+    if (location.pathname === '/') {
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    } else {
+      setScrolled(true);
+    }
+  }, [location.pathname]);
 
   const navLinks = [
     { name: "Home", id: "home" },
@@ -64,12 +73,13 @@ const Navbar = () => {
       )}
     >
       <div className="container mx-auto flex justify-between items-center">
-        <a href="#home" className="text-2xl font-bold text-primary">
+        <Link to="/" className="text-2xl font-bold text-primary">
           DevOps<span className="text-foreground">Engineer</span>
-        </a>
+        </Link>
 
-        <div className="hidden md:flex space-x-8">
-          {navLinks.map((link) => (
+        <div className="hidden md:flex space-x-6 items-center">
+          {/* Only show section links on home page */}
+          {location.pathname === '/' && navLinks.map((link) => (
             <a
               key={link.id}
               href={`#${link.id}`}
@@ -85,6 +95,17 @@ const Navbar = () => {
               {link.name}
             </a>
           ))}
+          
+          {/* Chat button always visible */}
+          <Link to="/chat">
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+            >
+              <MessageCircle size={16} />
+              <span>Chat</span>
+            </Button>
+          </Link>
         </div>
       </div>
     </nav>
