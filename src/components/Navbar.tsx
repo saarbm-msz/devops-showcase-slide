@@ -12,7 +12,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["home", "about", "skills", "projects", "contact"];
+      const sections = ["home", "about", "skills", "projects", "chat", "contact"];
       
       const scrollPosition = window.scrollY + 100;
       
@@ -52,6 +52,7 @@ const Navbar = () => {
     { name: "About", id: "about" },
     { name: "Skills", id: "skills" },
     { name: "Projects", id: "projects" },
+    { name: "Chat", id: "chat" },
     { name: "Contact", id: "contact" },
   ];
 
@@ -96,16 +97,17 @@ const Navbar = () => {
             </a>
           ))}
           
-          {/* Chat button always visible */}
-          <Link to="/chat">
-            <Button 
-              variant="outline" 
-              className="flex items-center gap-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
-            >
-              <MessageCircle size={16} />
-              <span>Chat</span>
-            </Button>
-          </Link>
+          {/* Remove chat button since it's now in the sections */}
+          {location.pathname !== '/' && (
+            <Link to="/">
+              <Button 
+                variant="outline" 
+                className="flex items-center gap-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+              >
+                <span>Go Home</span>
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
     </nav>
