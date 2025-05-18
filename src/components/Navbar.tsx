@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
@@ -12,7 +11,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["home", "about", "skills", "projects", "chat", "contact"];
+      const sections = ["home", "chat", "about", "skills", "projects", "contact"];
       
       const scrollPosition = window.scrollY + 100;
       
@@ -49,10 +48,10 @@ const Navbar = () => {
 
   const navLinks = [
     { name: "Home", id: "home" },
+    { name: "Chat", id: "chat" },
     { name: "About", id: "about" },
     { name: "Skills", id: "skills" },
     { name: "Projects", id: "projects" },
-    { name: "Chat", id: "chat" },
     { name: "Contact", id: "contact" },
   ];
 
@@ -97,7 +96,6 @@ const Navbar = () => {
             </a>
           ))}
           
-          {/* Remove chat button since it's now in the sections */}
           {location.pathname !== '/' && (
             <Link to="/">
               <Button 

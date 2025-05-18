@@ -47,10 +47,10 @@ const Index = () => {
     <div className="min-h-screen overflow-x-hidden">
       <Navbar />
       <Hero />
+      <Chat />
       <About />
       <Skills />
       <Projects />
-      <Chat />
       <Contact />
       <Footer />
     </div>

@@ -3,7 +3,6 @@ import { useState, useRef, useEffect } from "react";
 import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import ChatMessage from "./ChatMessage";
 
@@ -84,7 +83,7 @@ const ChatUI = () => {
   };
 
   return (
-    <div className="relative flex flex-col h-[calc(100vh-5rem)] max-h-[calc(100vh-5rem)] bg-background rounded-lg overflow-hidden border border-border glass-card">
+    <div className="relative flex flex-col h-[600px] max-h-[70vh] bg-background rounded-lg overflow-hidden border border-border glass-card">
       <div className="p-4 bg-secondary/30 backdrop-blur-md border-b border-border">
         <h2 className="text-xl font-bold text-primary">Chat with AI Assistant</h2>
         <p className="text-sm text-muted-foreground">Ask about my experience, skills, projects, or resume</p>
@@ -97,10 +96,12 @@ const ChatUI = () => {
         ))}
         
         {isLoading && (
-          <div className="flex items-center space-x-2 text-muted-foreground">
-            <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-            <div className="w-2 h-2 rounded-full bg-primary animate-pulse delay-75"></div>
-            <div className="w-2 h-2 rounded-full bg-primary animate-pulse delay-150"></div>
+          <div className="flex items-start space-x-2 p-3 rounded-lg bg-secondary/20 max-w-[80%] animate-pulse">
+            <div className="typing-indicator">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
           </div>
         )}
         
