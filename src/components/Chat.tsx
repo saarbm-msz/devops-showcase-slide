@@ -13,11 +13,11 @@ const Chat = () => {
   };
   
   return (
-    <section id="chat" className="section min-h-screen flex flex-col items-center justify-center px-6 py-20">
+    <section id="chat" className="section min-h-[70vh] flex flex-col items-center justify-center px-6 mt-[-80px] z-10 relative">
       <div className="container mx-auto">
-        <div className="flex flex-col items-center mb-12 text-center">
+        <div className="flex flex-col items-center mb-8 text-center">
           <h2 className="text-4xl font-bold tracking-tight mb-4 text-primary">
-            Chat with AI Assistant
+            Chat with Tomer's AI Assistant
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
             Have questions about my experience, skills, or projects? Chat with my AI assistant for immediate answers based on my portfolio and resume.
@@ -26,7 +26,7 @@ const Chat = () => {
           {!expanded && (
             <div className="mb-8 p-6 glass-card w-full max-w-2xl animate-fade-in">
               <p className="text-lg mb-4">
-                👋 Hi there! I'm the AI assistant for this portfolio. I can answer questions about:
+                👋 Hi there! I'm Tomer's AI assistant. I can answer questions about:
               </p>
               <ul className="list-disc list-inside space-y-2 mb-4 text-left">
                 <li>Work experience & professional background</li>
