@@ -48,12 +48,12 @@ const Hero = () => {
       </div>
       
       <div className="container mx-auto relative z-10 pt-24">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-3xl mx-auto text-center">
           <span 
             ref={(el) => (textContainers.current[0] = el)} 
             className="reveal-container block mb-3"
           >
-            <span className="code-tag text-primary text-lg font-medium reveal-text">DEVOPS ENGINEER</span>
+            <span className="code-tag text-primary text-lg font-medium reveal-text">HELLO, I'M A</span>
           </span>
           
           <div className="mb-6">
@@ -62,7 +62,7 @@ const Hero = () => {
               className="reveal-container block"
             >
               <h1 className="text-5xl md:text-7xl font-bold reveal-text">
-                TOMER SHTAUBER
+                DEVOPS ENGINEER
               </h1>
             </span>
           </div>

@@ -1,6 +1,6 @@
 
 import { useState, useRef, useEffect } from "react";
-import { Send, X, Download, Mail } from "lucide-react";
+import { Send, Download, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -146,11 +146,6 @@ const ChatUI = ({ onClose }: ChatUIProps) => {
           >
             <Mail size={18} />
           </Button>
-          {onClose && (
-            <Button variant="outline" size="icon" onClick={onClose}>
-              <X size={18} />
-            </Button>
-          )}
         </div>
       </div>
 
