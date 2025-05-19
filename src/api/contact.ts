@@ -27,7 +27,7 @@ export const submitContactForm = async (formData: ContactFormData) => {
 };
 
 // Export chat transcript to email
-export const exportChatToEmail = async (email: string, message: string, chatMessages: ChatMessageInterface[]) => {
+export const exportChatToEmail = async (email: string, message: string, chatMessages: ChatMessageInterface[], conversationId: string) => {
   try {
     console.log('Exporting chat:', { email, message, includeTranscript: !!chatMessages });
     
@@ -36,7 +36,8 @@ export const exportChatToEmail = async (email: string, message: string, chatMess
       body: JSON.stringify({
         email,
         message,
-        chatMessages
+        chatMessages,
+        conversationId,
       }),
     });
     

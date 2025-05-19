@@ -18,7 +18,7 @@ import { Label } from "@/components/ui/label";
 import { sendMessage } from "@/api/chat";
 import { exportChatToEmail } from "@/api/contact";
 import { ChatMessageInterface } from "@/types";
-
+import { v4 as uuidv4 } from "uuid"; // UUID import
 
 
 interface ChatUIProps {
@@ -28,7 +28,6 @@ interface ChatUIProps {
 const ChatUI = ({ onClose }: ChatUIProps) => {
   const [messages, setMessages] = useState<ChatMessageInterface[]>([
     {
-      id: '1',
       content: "Hi there! I'm Tomer's AI assistant for this portfolio. Ask me anything about Tomer's experience, skills, projects, or resume!",
       role: 'assistant',
       timestamp: new Date(),
@@ -43,6 +42,9 @@ const ChatUI = ({ onClose }: ChatUIProps) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
+  // Unique conversation ID (UUID)
+  const conversationId = useRef<string>(uuidv4());
+
   // Auto scroll to bottom when new messages arrive
   useEffect(() => {
     if (scrollContainerRef.current) {
@@ -56,7 +58,6 @@ const ChatUI = ({ onClose }: ChatUIProps) => {
     if (!input.trim()) return;
 
     const userMessage: ChatMessageInterface = {
-      id: Date.now().toString(),
       content: input,
       role: 'user',
       timestamp: new Date(),
@@ -68,15 +69,10 @@ const ChatUI = ({ onClose }: ChatUIProps) => {
 
     try {
       // Send message to API
-      const response = await sendMessage(messages, input);
+      const response = await sendMessage(messages, input, conversationId.current);
 
       // Create AI message from response
-      const aiMessage: ChatMessageInterface = {
-        id: response.id || (Date.now() + 1).toString(),
-        content: response.content,
-        role: 'assistant',
-        timestamp: new Date(response.timestamp) || new Date(),
-      };
+      const aiMessage: ChatMessageInterface = response;
 
       setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
@@ -101,14 +97,12 @@ const ChatUI = ({ onClose }: ChatUIProps) => {
       return;
     }
 
-    let chatTranscript = null;
-
     try {
-      await exportChatToEmail(email, message, messages);
+      await exportChatToEmail(email, message, messages, conversationId.current);
 
       toast({
         title: "Chat Exported",
-        description: `Your chat has been sent to ${email}`,
+        description: `Your chat has been sent to ${email} (Conversation ID: ${conversationId.current})`,
       });
 
       setExportDialogOpen(false);
@@ -144,8 +138,8 @@ const ChatUI = ({ onClose }: ChatUIProps) => {
       <div
         ref={scrollContainerRef}
         className="flex-1 overflow-auto p-4 space-y-4">
-        {messages.map((message) => (
-          <ChatMessage key={message.id} message={message} />
+        {messages.map((message, index) => (
+          <ChatMessage key={index} message={message} />
         ))}
 
         {isLoading && (

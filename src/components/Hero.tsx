@@ -46,18 +46,18 @@ const Hero = () => {
       <div className="hero-gradient">
         <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-10"></div>
       </div>
-      
+
       <div className="container mx-auto relative z-10 pt-24">
         <div className="max-w-3xl mx-auto text-center">
-          <span 
-            ref={(el) => (textContainers.current[0] = el)} 
+          <span
+            ref={(el) => (textContainers.current[0] = el)}
             className="reveal-container block mb-3"
           >
-            <span className="code-tag text-primary text-lg font-medium reveal-text">HELLO, I'M A</span>
+            <span className="text-primary text-lg font-medium reveal-text">HELLO, I'M A</span>
           </span>
-          
+
           <div className="mb-6">
-            <span 
+            <span
               ref={(el) => (textContainers.current[1] = el)}
               className="reveal-container block"
             >
@@ -66,8 +66,8 @@ const Hero = () => {
               </h1>
             </span>
           </div>
-          
-          <span 
+
+          <span
             ref={(el) => (textContainers.current[2] = el)}
             className="reveal-container block mb-8"
           >
@@ -81,21 +81,21 @@ const Hero = () => {
               <p className="text-lg mb-6">
                 Have questions about my experience, skills, or projects? Chat with my AI assistant for immediate answers based on my portfolio and resume.
               </p>
-              <span 
+              <span
                 ref={(el) => (textContainers.current[3] = el)}
                 className="reveal-container inline-block"
               >
-                <Button 
+                <Button
                   onClick={() => setShowChat(true)}
                   className="flex items-center space-x-2 bg-primary text-primary-foreground px-8 py-6 rounded-md font-medium text-lg reveal-text hover:bg-primary/90 transition-colors"
                 >
                   <MessageCircle size={24} />
-                  <span>CHAT WITH TOMER'S AI</span>
+                  <span>CHAT WITH MY AI</span>
                 </Button>
               </span>
             </div>
           )}
-          
+
           {showChat && (
             <div className="animate-fade-in max-w-4xl mx-auto mt-12">
               <ChatUI onClose={() => setShowChat(false)} />
