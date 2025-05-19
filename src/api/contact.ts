@@ -1,4 +1,5 @@
 
+import { ChatMessageInterface } from '@/types';
 import { fetchAPI } from './config';
 
 export interface ContactFormData {
@@ -26,16 +27,16 @@ export const submitContactForm = async (formData: ContactFormData) => {
 };
 
 // Export chat transcript to email
-export const exportChatToEmail = async (email: string, message: string, chatTranscript: string | null) => {
+export const exportChatToEmail = async (email: string, message: string, chatMessages: ChatMessageInterface[]) => {
   try {
-    console.log('Exporting chat:', { email, message, includeTranscript: !!chatTranscript });
+    console.log('Exporting chat:', { email, message, includeTranscript: !!chatMessages });
     
     const response = await fetchAPI('/export-chat', {
       method: 'POST',
       body: JSON.stringify({
         email,
         message,
-        chatTranscript
+        chatMessages
       }),
     });
     

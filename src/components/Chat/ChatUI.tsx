@@ -17,20 +17,16 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { sendMessage } from "@/api/chat";
 import { exportChatToEmail } from "@/api/contact";
+import { ChatMessageInterface } from "@/types";
 
-type Message = {
-  id: string;
-  content: string;
-  role: 'user' | 'assistant';
-  timestamp: Date;
-};
+
 
 interface ChatUIProps {
   onClose?: () => void;
 }
 
 const ChatUI = ({ onClose }: ChatUIProps) => {
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessages] = useState<ChatMessageInterface[]>([
     {
       id: '1',
       content: "Hi there! I'm Tomer's AI assistant for this portfolio. Ask me anything about Tomer's experience, skills, projects, or resume!",
@@ -59,7 +55,7 @@ const ChatUI = ({ onClose }: ChatUIProps) => {
 
     if (!input.trim()) return;
 
-    const userMessage: Message = {
+    const userMessage: ChatMessageInterface = {
       id: Date.now().toString(),
       content: input,
       role: 'user',
@@ -73,9 +69,9 @@ const ChatUI = ({ onClose }: ChatUIProps) => {
     try {
       // Send message to API
       const response = await sendMessage(messages, input);
-      
+
       // Create AI message from response
-      const aiMessage: Message = {
+      const aiMessage: ChatMessageInterface = {
         id: response.id || (Date.now() + 1).toString(),
         content: response.content,
         role: 'assistant',
@@ -106,23 +102,15 @@ const ChatUI = ({ onClose }: ChatUIProps) => {
     }
 
     let chatTranscript = null;
-    if (includeChat) {
-      chatTranscript = messages.map(msg => {
-        const time = msg.timestamp instanceof Date 
-          ? msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
-          : new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        return `[${time}] ${msg.role === 'assistant' ? 'Tomer AI' : 'You'}: ${msg.content}`;
-      }).join('\n\n');
-    }
 
     try {
-      await exportChatToEmail(email, message, chatTranscript);
-      
+      await exportChatToEmail(email, message, messages);
+
       toast({
         title: "Chat Exported",
         description: `Your chat has been sent to ${email}`,
       });
-      
+
       setExportDialogOpen(false);
     } catch (error) {
       toast({
@@ -141,9 +129,9 @@ const ChatUI = ({ onClose }: ChatUIProps) => {
           <p className="text-sm text-muted-foreground">Ask about my experience, skills, projects, or resume</p>
         </div>
         <div className="flex space-x-2">
-          <Button 
-            variant="outline" 
-            size="icon" 
+          <Button
+            variant="outline"
+            size="icon"
             onClick={() => setExportDialogOpen(true)}
             className="text-primary border-primary hover:bg-primary hover:text-primary-foreground"
           >
@@ -196,7 +184,7 @@ const ChatUI = ({ onClose }: ChatUIProps) => {
               Send this conversation to your email address.
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email address</Label>
@@ -208,7 +196,7 @@ const ChatUI = ({ onClose }: ChatUIProps) => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="message">Message (optional)</Label>
               <Input
@@ -218,17 +206,17 @@ const ChatUI = ({ onClose }: ChatUIProps) => {
                 onChange={(e) => setMessage(e.target.value)}
               />
             </div>
-            
+
             <div className="flex items-center space-x-2 pt-2">
-              <Checkbox 
-                id="includeChat" 
-                checked={includeChat} 
+              <Checkbox
+                id="includeChat"
+                checked={includeChat}
                 onCheckedChange={(checked) => setIncludeChat(checked as boolean)}
               />
               <Label htmlFor="includeChat">Attach chat transcript</Label>
             </div>
           </div>
-          
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setExportDialogOpen(false)}>
               Cancel
