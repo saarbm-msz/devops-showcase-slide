@@ -5,7 +5,6 @@ import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Skills from "@/components/Skills";
 import Projects from "@/components/Projects";
-import Chat from "@/components/Chat";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import { useToast } from "@/hooks/use-toast";
@@ -47,7 +46,6 @@ const Index = () => {
     <div className="min-h-screen overflow-x-hidden">
       <Navbar />
       <Hero />
-      <Chat />
       <About />
       <Skills />
       <Projects />

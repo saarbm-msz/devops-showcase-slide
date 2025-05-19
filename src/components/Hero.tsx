@@ -1,8 +1,15 @@
 
 import { useEffect, useRef } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { MessageCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import ChatUI from "./Chat/ChatUI";
+import { useState } from "react";
 
 const Hero = () => {
   const textContainers = useRef<(HTMLSpanElement | null)[]>([]);
+  const [showChat, setShowChat] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     const options = {
@@ -69,35 +76,33 @@ const Hero = () => {
               Automating workflows, optimizing infrastructure, and delivering seamless deployments
             </p>
           </span>
+
+          {!showChat && (
+            <div className="mb-8 max-w-2xl mx-auto animate-fade-in">
+              <p className="text-lg mb-6">
+                Have questions about my experience, skills, or projects? Chat with my AI assistant for immediate answers based on my portfolio and resume.
+              </p>
+              <span 
+                ref={(el) => (textContainers.current[3] = el)}
+                className="reveal-container inline-block"
+              >
+                <Button 
+                  onClick={() => setShowChat(true)}
+                  className="flex items-center space-x-2 bg-primary text-primary-foreground px-8 py-6 rounded-md font-medium text-lg reveal-text hover:bg-primary/90 transition-colors"
+                >
+                  <MessageCircle size={24} />
+                  <span>CHAT WITH TOMER'S AI</span>
+                </Button>
+              </span>
+            </div>
+          )}
           
-          <span 
-            ref={(el) => (textContainers.current[3] = el)}
-            className="reveal-container inline-block"
-          >
-            <a 
-              href="#projects"
-              className="inline-block bg-primary text-primary-foreground px-8 py-3 rounded-md font-medium reveal-text hover:bg-primary/90 transition-colors"
-            >
-              View My Work
-            </a>
-          </span>
+          {showChat && (
+            <div className="animate-fade-in max-w-4xl mx-auto mt-12">
+              <ChatUI onClose={() => setShowChat(false)} />
+            </div>
+          )}
         </div>
-      </div>
-      
-      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="text-primary"
-        >
-          <path d="M12 5v14M5 12l7 7 7-7" />
-        </svg>
       </div>
     </section>
   );

@@ -1,9 +1,20 @@
+
 import { useState, useRef, useEffect } from "react";
-import { Send } from "lucide-react";
+import { Send, X, Download, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import ChatMessage from "./ChatMessage";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 type Message = {
   id: string;
@@ -12,7 +23,11 @@ type Message = {
   timestamp: Date;
 };
 
-const ChatUI = () => {
+interface ChatUIProps {
+  onClose?: () => void;
+}
+
+const ChatUI = ({ onClose }: ChatUIProps) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -23,6 +38,10 @@ const ChatUI = () => {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [includeChat, setIncludeChat] = useState(true);
+  const [message, setMessage] = useState("");
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -81,11 +100,58 @@ const ChatUI = () => {
     }
   };
 
+  const handleExportChat = () => {
+    // Generate the chat transcript
+    if (!email.trim()) {
+      toast({
+        title: "Email Required",
+        description: "Please provide an email address to export the chat.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    let emailBody = message + "\n\n";
+
+    if (includeChat) {
+      emailBody += "--- Chat Transcript ---\n\n";
+      messages.forEach(msg => {
+        const time = msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        emailBody += `[${time}] ${msg.role === 'assistant' ? 'Tomer AI' : 'You'}: ${msg.content}\n\n`;
+      });
+    }
+
+    // Simulate the email sending
+    toast({
+      title: "Chat Exported",
+      description: `Your chat has been sent to ${email}`,
+    });
+    
+    setExportDialogOpen(false);
+  };
+
   return (
-    <div className="relative flex flex-col h-[600px] max-h-[70vh] bg-background rounded-lg overflow-hidden border border-border glass-card mb-12">
-      <div className="p-4 bg-secondary/30 backdrop-blur-md border-b border-border">
-        <h2 className="text-xl font-bold text-primary">Chat with Tomer's AI Assistant</h2>
-        <p className="text-sm text-muted-foreground">Ask about my experience, skills, projects, or resume</p>
+    <div className="relative flex flex-col h-[500px] max-h-[70vh] bg-background rounded-lg overflow-hidden border border-border glass-card">
+      <div className="p-4 bg-secondary/30 backdrop-blur-md border-b border-border flex justify-between items-center">
+        <div>
+          <h2 className="text-xl font-bold text-primary">Chat with Tomer's AI Assistant</h2>
+          <p className="text-sm text-muted-foreground">Ask about my experience, skills, projects, or resume</p>
+        </div>
+        <div className="flex space-x-2">
+          <Button 
+            variant="outline" 
+            size="icon" 
+            onClick={() => setExportDialogOpen(true)}
+            className="text-primary border-primary hover:bg-primary hover:text-primary-foreground"
+          >
+            <Mail size={18} />
+          </Button>
+          {onClose && (
+            <Button variant="outline" size="icon" onClick={onClose}>
+              <X size={18} />
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Messages Container */}
@@ -122,6 +188,59 @@ const ChatUI = () => {
           </Button>
         </div>
       </form>
+
+      {/* Export Dialog */}
+      <Dialog open={exportDialogOpen} onOpenChange={setExportDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Export Chat</DialogTitle>
+            <DialogDescription>
+              Send this conversation to your email address.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email address</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="your@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="message">Message (optional)</Label>
+              <Input
+                id="message"
+                placeholder="Add a personal message..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+            </div>
+            
+            <div className="flex items-center space-x-2 pt-2">
+              <Checkbox 
+                id="includeChat" 
+                checked={includeChat} 
+                onCheckedChange={(checked) => setIncludeChat(checked as boolean)}
+              />
+              <Label htmlFor="includeChat">Attach chat transcript</Label>
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setExportDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleExportChat} className="ml-2">
+              Send Email
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
