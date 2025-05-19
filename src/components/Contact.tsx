@@ -1,8 +1,17 @@
-
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState, FormEvent } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { submitContactForm } from "@/api/contact";
 
 const Contact = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const { toast } = useToast();
   
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -24,6 +33,41 @@ const Contact = () => {
       }
     };
   }, []);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    try {
+      await submitContactForm(formData);
+      
+      toast({
+        title: "Message Sent",
+        description: "Your message has been sent successfully!",
+      });
+      
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send your message. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <section id="contact" className="py-24 px-6 bg-secondary/20">
@@ -104,7 +148,7 @@ const Contact = () => {
           <div className="glass-card p-6 md:p-8">
             <h3 className="text-2xl font-bold mb-6">Send A Message</h3>
             
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="mb-5">
                 <label htmlFor="name" className="block mb-2 text-sm font-medium">Name</label>
                 <input
@@ -112,6 +156,9 @@ const Contact = () => {
                   id="name"
                   placeholder="Your name"
                   className="w-full p-3 bg-secondary/50 border border-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
                 />
               </div>
               
@@ -122,6 +169,9 @@ const Contact = () => {
                   id="email"
                   placeholder="your@email.com"
                   className="w-full p-3 bg-secondary/50 border border-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
                 />
               </div>
               
@@ -132,6 +182,9 @@ const Contact = () => {
                   id="subject"
                   placeholder="Subject"
                   className="w-full p-3 bg-secondary/50 border border-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  required
                 />
               </div>
               
@@ -142,14 +195,18 @@ const Contact = () => {
                   rows={5}
                   placeholder="Your message"
                   className="w-full p-3 bg-secondary/50 border border-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  required
                 ></textarea>
               </div>
               
               <button
                 type="submit"
-                className="w-full bg-primary text-primary-foreground px-5 py-3 rounded-md font-medium hover:bg-primary/90 transition-colors"
+                disabled={isSubmitting}
+                className="w-full bg-primary text-primary-foreground px-5 py-3 rounded-md font-medium hover:bg-primary/90 transition-colors disabled:opacity-70"
               >
-                Send Message
+                {isSubmitting ? 'Sending...' : 'Send Message'}
               </button>
             </form>
           </div>

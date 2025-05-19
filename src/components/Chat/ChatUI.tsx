@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { sendMessage } from "@/api/chat";
+import { exportChatToEmail } from "@/api/contact";
 
 type Message = {
   id: string;
@@ -68,40 +70,32 @@ const ChatUI = ({ onClose }: ChatUIProps) => {
     setInput("");
     setIsLoading(true);
 
-    setTimeout(() => {
+    try {
+      // Send message to API
+      const response = await sendMessage(messages, input);
+      
+      // Create AI message from response
       const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: getSimulatedResponse(input),
+        id: response.id || (Date.now() + 1).toString(),
+        content: response.content,
         role: 'assistant',
-        timestamp: new Date(),
+        timestamp: new Date(response.timestamp) || new Date(),
       };
 
       setMessages(prev => [...prev, aiMessage]);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast({
+        title: "Error",
+        description: "Failed to get response. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
       setIsLoading(false);
-    }, 1500);
-  };
-
-  const getSimulatedResponse = (query: string): string => {
-    const lowerQuery = query.toLowerCase();
-    if (lowerQuery.includes("experience") || lowerQuery.includes("work")) {
-      return "Tomer has over 8 years of experience in DevOps, working with companies like AWS, Google Cloud, and various startups to implement CI/CD pipelines, infrastructure as code, and Kubernetes deployments.";
-    } else if (lowerQuery.includes("education") || lowerQuery.includes("study")) {
-      return "Tomer has a Master's degree in Computer Science with a focus on distributed systems from Stanford University.";
-    } else if (lowerQuery.includes("skill") || lowerQuery.includes("tech")) {
-      return "Tomer's technical skills include: Kubernetes, Docker, Terraform, AWS, GCP, Azure, CI/CD (Jenkins, GitHub Actions, GitLab CI), Ansible, Prometheus, Grafana, ELK stack, and various programming languages like Python, Go, and Bash.";
-    } else if (lowerQuery.includes("project")) {
-      return "Tomer has led several significant projects, including a complete cloud migration for a Fortune 500 company, implementing a zero-downtime deployment system, and building an automated disaster recovery solution that reduced recovery time by 80%.";
-    } else if (lowerQuery.includes("resume")) {
-      return "You can download Tomer's full resume by clicking the 'Download Resume' button in the contact section. It includes detailed information about his work history, projects, and technical skills.";
-    } else if (lowerQuery.includes("name") || lowerQuery.includes("who")) {
-      return "My name is Tomer! I'm a DevOps Engineer with expertise in cloud infrastructure, automation, and CI/CD pipelines.";
-    } else {
-      return "Thanks for your question! As Tomer's AI assistant, I can tell you about his experience, skills, projects, education, or resume. Feel free to ask something specific!";
     }
   };
 
-  const handleExportChat = () => {
-    // Generate the chat transcript
+  const handleExportChat = async () => {
     if (!email.trim()) {
       toast({
         title: "Email Required",
@@ -111,23 +105,32 @@ const ChatUI = ({ onClose }: ChatUIProps) => {
       return;
     }
 
-    let emailBody = message + "\n\n";
-
+    let chatTranscript = null;
     if (includeChat) {
-      emailBody += "--- Chat Transcript ---\n\n";
-      messages.forEach(msg => {
-        const time = msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        emailBody += `[${time}] ${msg.role === 'assistant' ? 'Tomer AI' : 'You'}: ${msg.content}\n\n`;
-      });
+      chatTranscript = messages.map(msg => {
+        const time = msg.timestamp instanceof Date 
+          ? msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+          : new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return `[${time}] ${msg.role === 'assistant' ? 'Tomer AI' : 'You'}: ${msg.content}`;
+      }).join('\n\n');
     }
 
-    // Simulate the email sending
-    toast({
-      title: "Chat Exported",
-      description: `Your chat has been sent to ${email}`,
-    });
-    
-    setExportDialogOpen(false);
+    try {
+      await exportChatToEmail(email, message, chatTranscript);
+      
+      toast({
+        title: "Chat Exported",
+        description: `Your chat has been sent to ${email}`,
+      });
+      
+      setExportDialogOpen(false);
+    } catch (error) {
+      toast({
+        title: "Export Failed",
+        description: "Failed to export the chat. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
