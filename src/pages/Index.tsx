@@ -34,8 +34,8 @@ const Index = () => {
     // Welcome toast
     setTimeout(() => {
       toast({
-        title: "Welcome to My Portfolio",
-        description: "Chat with my AI assistant to learn more about my experience!",
+        title: "Welcome to Tomer's Portfolio",
+        description: "Chat with the AI assistant to learn more about Tomer's experience!",
       });
     }, 1500);
     

@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 
 const About = () => {
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const options = {
