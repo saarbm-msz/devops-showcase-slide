@@ -61,7 +61,7 @@ const ToolBadge = ({ name }: ToolBadgeProps) => {
 };
 
 const Skills = () => {
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(

@@ -5,25 +5,25 @@
 
 @layer base {
   :root {
-    --background: 240 10% 3.9%;
+    --background: 260 54% 9%;
     --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
+    --card: 260 54% 9%;
     --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
+    --popover: 260 54% 9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 142 71% 45%;
-    --primary-foreground: 355 100% 97%;
-    --secondary: 240 3.7% 15.9%;
+    --primary: 260 75% 75%;
+    --primary-foreground: 260 54% 9%;
+    --secondary: 260 30% 20%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
+    --muted: 260 30% 20%;
     --muted-foreground: 240 5% 64.9%;
-    --accent: 142 71% 45%;
+    --accent: 260 75% 75%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 142 71% 45%;
+    --border: 260 30% 20%;
+    --input: 260 30% 20%;
+    --ring: 260 75% 75%;
     --radius: 0.5rem;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -202,4 +202,38 @@
 ::-webkit-scrollbar-thumb {
   background: hsl(var(--primary));
   border-radius: 24px;
+}
+
+/* Code tag style like in reference image */
+code {
+  font-family: 'JetBrains Mono', monospace;
+  background: hsl(var(--secondary));
+  padding: 0.2em 0.4em;
+  border-radius: 0.2em;
+  font-size: 0.9em;
+}
+
+/* Purple gradient background */
+.hero-gradient {
+  background: linear-gradient(135deg, hsl(260 54% 9%) 0%, hsl(260 54% 20%) 100%);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+/* Code tag brackets */
+.code-tag {
+  position: relative;
+  font-family: 'JetBrains Mono', monospace;
+  color: hsl(var(--primary));
+}
+
+.code-tag::before {
+  content: '<';
+  margin-right: 0.1em;
+}
+
+.code-tag::after {
+  content: '/>';
+  margin-left: 0.1em;
 }

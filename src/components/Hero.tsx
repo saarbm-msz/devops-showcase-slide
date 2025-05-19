@@ -1,10 +1,9 @@
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ChatUI from "./Chat/ChatUI";
-import { useState } from "react";
 
 const Hero = () => {
   const textContainers = useRef<(HTMLSpanElement | null)[]>([]);
@@ -44,17 +43,17 @@ const Hero = () => {
 
   return (
     <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden px-6">
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-secondary via-background to-background opacity-90"></div>
+      <div className="hero-gradient">
+        <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-10"></div>
       </div>
       
       <div className="container mx-auto relative z-10 pt-24">
-        <div className="max-w-3xl mx-auto text-center">
+        <div className="max-w-3xl mx-auto">
           <span 
             ref={(el) => (textContainers.current[0] = el)} 
             className="reveal-container block mb-3"
           >
-            <span className="text-primary text-lg font-medium reveal-text">Hello, I'm a</span>
+            <span className="code-tag text-primary text-lg font-medium reveal-text">DEVOPS ENGINEER</span>
           </span>
           
           <div className="mb-6">
@@ -63,7 +62,7 @@ const Hero = () => {
               className="reveal-container block"
             >
               <h1 className="text-5xl md:text-7xl font-bold reveal-text">
-                DevOps Engineer
+                TOMER SHTAUBER
               </h1>
             </span>
           </div>
