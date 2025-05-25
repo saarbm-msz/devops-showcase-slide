@@ -7,10 +7,10 @@ ARG VITE_API_URL
 
 # Create .env file
 RUN touch .env && \
-    echo "VITE_API_URL=$VITE_API_URL" >> .env && \
+    echo "VITE_API_URL=$VITE_API_URL" >> .env
 
     # Install dependencies and build the app
-    COPY package.json package-lock.json ./
+COPY package.json package-lock.json ./
 COPY . .
 RUN npm ci
 RUN npm run build
